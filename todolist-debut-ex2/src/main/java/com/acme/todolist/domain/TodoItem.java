@@ -27,6 +27,18 @@ public class TodoItem {
 		return time;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setTime(Instant time) {
+		this.time = time;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
 	public String getContent() {
 		return this.content;
 	}

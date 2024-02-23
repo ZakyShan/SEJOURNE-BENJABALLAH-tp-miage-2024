@@ -1,10 +1,12 @@
 package com.acme.todolist.adapters.persistence;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import com.acme.todolist.application.port.in.AddTodoItem;
 import org.springframework.stereotype.Component;
 
 import com.acme.todolist.application.port.out.LoadTodoItem;
@@ -18,11 +20,11 @@ import com.acme.todolist.domain.TodoItem;
  *
  */
 @Component
-public class TodoItemPersistenceAdapter implements LoadTodoItem,UpdateTodoItem {
+public class TodoItemPersistenceAdapter implements LoadTodoItem,UpdateTodoItem{
 
-	private TodoItemRepository todoItemRepository;
+	private final TodoItemRepository todoItemRepository;
 
-	private TodoItemMapper mapper;
+	private final TodoItemMapper mapper;
 
 	@Inject
 	public TodoItemPersistenceAdapter(TodoItemRepository todoItemRepository, TodoItemMapper mapper) {
@@ -37,6 +39,10 @@ public class TodoItemPersistenceAdapter implements LoadTodoItem,UpdateTodoItem {
 				.map(todoItemJpaEntory -> mapper.mapToTodoItem(todoItemJpaEntory)).collect(Collectors.toList());
 	}
 
-	// A compléter
+	@Override
+	public void storeNewTodoItem(TodoItem item) {
+		TodoItemJpaEntity todoItem = new TodoItemJpaEntity(item.getId(), item.getTime(), item.getContent(), true);
+		this.todoItemRepository.save(todoItem);
+	}
 
 }
