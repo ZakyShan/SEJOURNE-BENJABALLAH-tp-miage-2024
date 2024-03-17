@@ -3,7 +3,9 @@
 ## Nom du(des) étudiant(e)(s) de ce monôme/binôme 
 WARNING: NE PAS OUBLIER DE MENTIONNER LES DEUX NOMS SI VOUS ETES EN BINOME!
 
-#XXX# (et #YYY#)
+#-------------------------------------------------#
+#BEN-BENJABALLAH ZAKARYA# (et #SEJOURNE QUENTIN#)
+#-------------------------------------------------#
 
 Commentaires éventuels des étudiants : #XXXXXX#
 
@@ -57,15 +59,37 @@ TIP: [Rappel Git] Trois dépôts sont ici utilisés : le dépot Github de l'ense
 
 *Cette règle est-elle facilement testable par un test unitaire ?*
 
+Voici une réponse pour l'ensemble des trois questions : 
+
+Le code est structuré autour d'un modèle MVC simplifié, avec une séparation entre le contrôleur et la persistance des données. Mais avec l'utilisation de la règle métier de nombreux problèmes :
+
+En intégrant la logique métier directement dans le contrôleur, le code devient moins modulaire, plus difficile à maintenir, et donc plus susceptible aux erreurs.
+
+La logique métier, étant mélangée avec la logique du contrôleur, cela rend les tests unitaires plus complexes.
+
+La règle de gestion RG 1 se trouve dans la méthode finalContent du TodoListController. Elle est techniquement testable par un test unitaire, mais Spring et l'accès aux éléments rendent les tests compliqués.
+
 * Lancer une base PostgreSQL en Docker dans un terminal (on lance ici la base en mode interactif pour visualiser son activité. Pour la lancer en tâche de fond, remplacer les options `it` par `d` comme 'daemon'):
 ```bash
 docker run -it -e POSTGRES_PASSWORD=password -p 5432:5432 postgres
 ```
-*Expliquer cette ligne de commande (y compris les options utilisées)*
+*Expliquer cette ligne de commande : 
+
+docker run : Cette commande crée et démarre un nouveau conteneur Docker.
+
+-it : -i garde STDIN ouvert et -t alloue un pseudo-TTY, afin qu'il se comporte comme un terminal classique
+
+-e POSTGRES_PASSWORD=password : Définit une variable d'environnement POSTGRES_PASSWORD à l'intérieur du conteneur, utilisée par PostgreSQL pour définir le mot de passe de l'utilisateur superutilisateur postgres.
+
+-p 5432:5432 : AFfecte le port 5432 à l'intérieur du conteneur au port 5432 sur votre machine hôte. Cela vous permet de se connecter au serveur PostgreSQL exécutant à l'intérieur du conteneur en utilisant l'adresse IP et le port 5432 de la machine hôte.
+
+postgres :Cette commande télécharge la dernière image postgres de Docker Hub si elle n'est pas déjà disponible localement.
 
 * Compléter le code manquant dans la méthode `TodoListController.createTodoItem()`
 
-*Pourquoi `todoItemRepository` est-il `null` ? Quelle est la meilleure façon de l'injecter ?*
+* Pourquoi `todoItemRepository` est-il `null` ? Quelle est la meilleure façon de l'injecter ?*
+
+La meilleur façon de l'injecter est de passer par le constructeur, cela ne devrait pas occasionner de problème.
 
 * Modifier le code en conséquence.
 
@@ -108,6 +132,16 @@ Source : http://leanpub.com/get-your-hands-dirty-on-clean-architecture[Tom Hombe
 
 *Rappeler en quelques lignes les grands principes de l'architecture hexagonale.*
 
+L'architecture hexagonale est un modèle de conception logicielle qui sépare clairement la logique métier d'une application des détails techniques, selon les points clés suivants : 
+
+Au cœur de l'architecture, la logique métier est isolée des autres composants. Cela permet de faciliter le test et le développement de l'application indépendamment des plateformes externes.
+
+ Des adaptateurs convertissent les données du format utilisé par les ports vers celui des technologies externes et vice-versa.
+ 
+ Grâce à cette séparation, il est possible de changer les technologies spécifiques sans affecter la logique métier.
+
+ En résumé l'objectif de l'architecture hexagonale est de rendre les applications plus flexibles, évolutives, et faciles à maintenir, en séparant les préoccupations de manière claire et en favorisant l'indépendance par rapport aux technologies externes.
+
 Compléter ce code avec une fonctionnalité de création de `TodoItem`  persisté en base et appelé depuis un endpoint REST `POST /todos` qui :
 
 * prend un `TodoItem` au format JSON dans le body (voir exemple de contenu plus haut);
@@ -122,7 +156,19 @@ _Temps estimé : 20 mins_
 
 * Implémenter (en junit) des TU portant sur la règle de gestion qui consiste à afficher `[LATE!]` dans la description d'un item en retard de plus de 24h.
 
-*Quels types de tests devra-t-on écrire pour les adaptateurs ?* 
+*Quels types de tests devra-t-on écrire pour les adaptateurs ?*
+
+Tests d'intégration : Ces tests vérifient que les adaptateurs interagissent correctement avec les systèmes externes ou les parties de l'application qu'ils sont censés envelopper ou connecter.
+
+Tests de contrat : Ils s'assurent que l'adaptateur respecte les spécifications auxquels il est censé adhérer.
+
+Tests de bout en bout: ils sont inclus pour s'assurer que l'ensemble du système fonctionne comme prévu dans un environnement qui simule la production.
+
+Tests unitaires : Des tests unitaires sont écrits pour tester la logique complexe des appels externes manière isolée. 
+
+Tests de performance : Ces tests sont utiles pour évaluer comment les adaptateurs gèrent la charge et les performances ainsi que de tester la réactivité et la scalabilité de l'application.
+
+Ici nous essayerons d'écrire des tests d'intégrations et des tests unitaires dans notre cas.
 
 *S'il vous reste du temps, écrire quelques-uns de ces types de test.*
 
